@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
 </head>
 <body style="background-color: black;" >
-    <div style="color:white;font-family: Consolas;text-align: center;"> Press this Black Box <br> to initiate gOwOd Noises <br> have a gOwOd time ~</div>
+    <div id="DivLabel" style="color:white;font-family: Consolas;text-align: center;">
+        Press this Black Box <br> to initiate gOwOd Noises <br> have a gOwOd time ~
+    </div>
 </body>
 <script>
 
+const DivLabel = document.getElementById("DivLabel")
 const adkt = new (window.AudioContext || window.webkitAudioContext)();
 console.log("new audioKontext");
 
@@ -74,14 +77,19 @@ document.addEventListener('click', () =>
         adkt.resume().then(() =>
         {
             console.log("OnStart:begin");
+            DivLabel.textContent = "Starting ... Please Wait OwO>"
+            DivLabel.style.color = "#ffc000"
 
             POwO_loadSounds().then(()=>
             {
                 POwO_IntMainVoid_OnStart()
+
             })
             .catch(error => 
             {
                 console.error("error loading sounds : ", error);
+                DivLabel.textContent = "Oof, something's wrong QAQ>"
+                DivLabel.style.color = "#ff0000"
             })
 
             
@@ -99,6 +107,8 @@ function POwO_IntMainVoid_OnStart()
 {
     console.log("OnStart:complete")
     console.log("OnRuntime:start")
+    DivLabel.textContent = "Ready , have a good time OwO"
+    DivLabel.style.color = "#00c000"
 
     //setup
     for(let i = 0 ; i < 8 ; i++)
@@ -113,9 +123,17 @@ window.addEventListener('message', (event) => {
 
     //for now, event.data will be an array of stuffs
 
-    for(let i = 0 ; i < 8 ; i++)
+    if (channels.length === 0)
     {
-        channels[i].gainNode.gain.setValueAtTime(event.data[i],adkt.currentTime,0.01)
+        DivLabel.textContent = "WOAH, click me first OAO"
+        DivLabel.style.color = "#00c000"
+    }
+    else
+    {
+        for(let i = 0 ; i < 8 ; i++)
+        {
+            channels[i].gainNode.gain.setValueAtTime(event.data[i],adkt.currentTime,0.01)
+        }
     }
 });
 
