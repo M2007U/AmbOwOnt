@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    
+</body>
+<script>
+
+const adkt = new (window.AudioContext || window.webkitAudioContext)();
+console.log("new audioKontext");
+
+const List_URL =
+[
+    'forest_night.ogg', 'forest_wind.ogg',
+    'transport_airplane.ogg','transport_rail.ogg',
+    'water_pool.ogg','water_rain_medium.ogg','water_rain_soft.ogg','water_shore.ogg'
+];
+
+const List_AudioBuffers = [];
+var channels = []
+
+
+
+
+async function POwO_loadFile(InFileName)
+{
+    //convert a sound file to a audioBuffer, so that the audioContext can play it
+    const response = await fetch(InFileName);
+    const arrayBuffer = await response.arrayBuffer();
+    return await adkt.decodeAudioData(arrayBuffer);
+}
+
+async function POwO_loadSounds()
+{
+    //turn every sound file into an audio Buffer and have them in a list
+    for(var i = 0 ; i < List_URL.length ; i++)
+    {
+        const getSmallAudioBuffer = await POwO_loadFile(List_URL[i]);
+        List_AudioBuffers.push( getSmallAudioBuffer );
+    }
+
+
+}
+
+function POwO_MakeAudioChannel(InSoundIndex, InIsLoop, InInitialGain)
+{
+    //this will create 2 nodes (for now) : one bufferNode and one gain node the function will return them as an array
+    //so soon we can connect it however we like
+
+    const gainNode = adkt.createGain();
+    gainNode.gain.setValueAtTime(InInitialGain,adkt.currentTime,0.01);
+    gainNode.connect(adkt.destination);
+
+    const bufferNode = adkt.createBufferSource();
+    bufferNode.buffer = List_AudioBuffers[InSoundIndex];
+    bufferNode.loop = InIsLoop;
+    bufferNode.connect(gainNode);
+    bufferNode.start();
+
+    return {bufferNode, gainNode};
+}
+
+
+
+
+
+//force audio api
+document.addEventListener('click', () =>
+{
+    if (adkt.state === 'suspended')
+    {
+        adkt.resume().then(() =>
+        {
+            console.log("OnStart:begin");
+
+            POwO_loadSounds().then(()=>
+            {
+                POwO_IntMainVoid_OnStart()
+            })
+            .catch(error => 
+            {
+                console.error("error loading sounds : ", error);
+            })
+
+            
+        });
+    }
+}
+,
+{
+    once: true
+}); // Ensures it runs only once
+
+
+
+function POwO_IntMainVoid_OnStart()
+{
+    console.log("OnStart:complete")
+    console.log("OnRuntime:start")
+
+    //setup
+    for(let i = 0 ; i < 8 ; i++)
+    {
+        channels.push(POwO_MakeAudioChannel(i, true,0))
+        channels[i].gainNode.gain.setValueAtTime(0.5,adkt.currentTime,0.01)
+    }
+}
+
+//onReceiveMessage
+window.addEventListener('message', (event) => {
+
+    //for now, event.data will be an array of stuffs
+
+    for(let i = 0 ; i < 8 ; i++)
+    {
+        channels[i].gainNode.gain.setValueAtTime(event.data[i],adkt.currentTime,0.01)
+    }
+});
+
+
+
+</script>
+</html>
