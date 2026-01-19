@@ -113,7 +113,7 @@ function POwO_IntMainVoid_OnStart()
     DivLabel.style.color = "#00c000"
 
     //setup
-    for(let i = 0 ; i < 8 ; i++)
+    for(let i = 0 ; i < List_URL.length ; i++)
     {
         channels.push(POwO_MakeAudioChannel(i, true,0))
         channels[i].gainNode.gain.setValueAtTime(0.5,adkt.currentTime,0.01)
