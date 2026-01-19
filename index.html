@@ -18,7 +18,9 @@ const List_URL =
 [
     'forest_night.ogg', 'forest_wind.ogg',
     'transport_airplane.ogg','transport_rail.ogg',
-    'water_pool.ogg','water_rain_medium.ogg','water_rain_soft.ogg','water_shore.ogg'
+    'water_pool.ogg','water_rain_medium.ogg','water_rain_soft.ogg','water_shore.ogg',
+    'fire.ogg',
+    'object_clock.ogg','object_vitalSynth.ogg','object_windChime.ogg'
 ];
 
 const List_AudioBuffers = [];
@@ -88,7 +90,7 @@ document.addEventListener('click', () =>
             .catch(error => 
             {
                 console.error("error loading sounds : ", error);
-                DivLabel.textContent = "Oof, something's wrong QAQ>"
+                DivLabel.textContent = "Oof, something's wrong QAQ> pls refresh"
                 DivLabel.style.color = "#ff0000"
             })
 
