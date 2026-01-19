@@ -132,7 +132,7 @@ window.addEventListener('message', (event) => {
     }
     else
     {
-        for(let i = 0 ; i < 8 ; i++)
+        for(let i = 0 ; i < List_URL.length ; i++)
         {
             channels[i].gainNode.gain.setValueAtTime(event.data[i],adkt.currentTime,0.01)
         }
